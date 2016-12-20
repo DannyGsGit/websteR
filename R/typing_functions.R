@@ -28,6 +28,36 @@ decorate_dictionary <- function(dictionary) {
 }
 
 
+
+
+# Add summary stats
+#
+# Adds summary stats to the dictionary
+#   Unique levels   X
+#   NA count        X
+#   Mean
+#   SD
+#   Min/Max
+#   Head
+#
+# @param dataset The dataset for summary stats
+#
+# @return stats Data frame of summary statistics
+get_stats <- function(dataset) {
+  # Unique levels
+  unique.level.count <- sapply(dataset, function(x) length(unique(x)))
+  unique.level.pct <- round(unique.level.count / nrow(dataset), 3)
+
+  # Number of NAs
+  na.count <- sapply(dataset, function(x) sum(is.na(x)))
+  na.pct <- round(na.count / nrow(dataset), 3)
+
+  # Feature stats
+  feature.means <- suppressWarnings(sapply(dataset, mean))
+}
+
+
+
 #' Compile a data dictionary for a data frame
 #'
 #' Compiles a data dictionary for a data frame input
