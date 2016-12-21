@@ -35,14 +35,14 @@ decorate_dictionary <- function(dictionary) {
 # Adds summary stats to the dictionary
 #   Unique levels   X
 #   NA count        X
-#   Mean
-#   SD
+#   Mean            X
+#   SD              X
 #   Min/Max
-#   Head
+#   Head            X
 #
 # @param dataset The dataset for summary stats
 #
-# @return stats Data frame of summary statistics
+# @return dataset.stats Data frame of summary statistics
 get_stats <- function(dataset) {
   # Unique levels
   unique.level.count <- sapply(dataset, function(x) length(unique(x)))
@@ -52,8 +52,19 @@ get_stats <- function(dataset) {
   na.count <- sapply(dataset, function(x) sum(is.na(x)))
   na.pct <- round(na.count / nrow(dataset), 3)
 
+  # Heads
+  feature.heads <- sapply(dataset, function(x) paste(head(x), collapse = ", "))
+
   # Feature stats
   feature.means <- suppressWarnings(sapply(dataset, mean))
+  feature.sd <- suppressWarnings(sapply(dataset, sd))
+
+  dataset.stats <- data.frame(unique.level.count, unique.level.pct,
+                              na.count, na.pct,
+                              feature.heads, feature.means, feature.sd)
+
+  return(dataset.stats)
+
 }
 
 
@@ -75,6 +86,7 @@ get_stats <- function(dataset) {
 compile_dictionary <- function(dataset, name = "Data_Dictionary.csv", path = "./") {
   dict.temp <- get_feature_types(dataset)
   dict.temp <- decorate_dictionary(dict.temp)
+  dict.temp <- cbind(dict.temp, get_stats(dataset))
 
   dict.temp$feature <- as.character(dict.temp$feature)
   dict.temp$type <- as.character(dict.temp$type)
