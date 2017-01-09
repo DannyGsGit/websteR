@@ -53,11 +53,11 @@ get_stats <- function(dataset) {
   na.pct <- round(na.count / nrow(dataset), 3)
 
   # Heads
-  feature.heads <- sapply(dataset, function(x) paste(head(x), collapse = ", "))
+  feature.heads <- sapply(dataset, function(x) paste(utils::head(x), collapse = ", "))
 
   # Feature stats
   feature.means <- suppressWarnings(sapply(dataset, mean))
-  feature.sd <- suppressWarnings(sapply(dataset, sd))
+  feature.sd <- suppressWarnings(sapply(dataset, stats::sd))
 
   dataset.stats <- data.frame(unique.level.count, unique.level.pct,
                               na.count, na.pct,
@@ -135,19 +135,19 @@ enforce_dictionary <- function(data, dictionary.path, enforce.keep = TRUE) {
   # Apply typing to columns
   ## Factors
   factor.features <- dictionary$feature[which(dictionary$type == "factor")]
-  data[, factor.features] <- lapply(data[, factor.features], as.factor)
+  data[, factor.features] <- lapply(data[factor.features], as.factor)
 
   ## Numerics
   numeric.features <- dictionary$feature[which(dictionary$type == "numeric")]
-  data[, numeric.features] <- lapply(data[, numeric.features], as.numeric)
+  data[, numeric.features] <- lapply(data[numeric.features], as.numeric)
 
   ## Characters
   character.features <- dictionary$feature[which(dictionary$type == "character")]
-  data[, character.features] <- lapply(data[, character.features], as.character)
+  data[, character.features] <- lapply(data[character.features], as.character)
 
   ## Integers
   integer.features <- dictionary$feature[which(dictionary$type == "integer")]
-  data[, integer.features] <- lapply(data[, integer.features], as.integer)
+  data[, integer.features] <- lapply(data[integer.features], as.integer)
 
   return(data)
 
